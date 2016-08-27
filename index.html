@@ -9,35 +9,58 @@
     <div class='content'>
     <script>
 
+      var $body = $('.content');
 
+      $(document).ready(function(){
+        refreshPage();
+        $('.refresh').on('click', refreshPage);     
+      });
 
       var refreshPage =function() {
-        //setup content body
-        var $body = $('.content');
+        //clear body
         $body.html('');
-        
         
         //iterate through streams for tweets
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          createEntry(tweet,$body);
+          createEntry(tweet);
           index -= 1;
         }
 
+        $('.refresh').text('Refresh');
         //make sure CSS is applied
         createStyle();
       }
 
+      var showUserHist = function() {
+        //clear body
+        $body.html('');
 
+        var username = $(this).text();
+        console.log(username);
+
+        //iterate through streams for tweets
+        var index = streams.users[username].length - 1;
+        while(index >= 0){
+          var tweet = streams.users[username][index];
+          createEntry(tweet);
+          index -= 1;
+        }
+
+        $('.refresh').text('Show All');
+        
+        //make sure CSS is applied
+        createStyle();
+      }
 
       //do this for each tweet
-      var createEntry = function(tweet, body) {
+      var createEntry = function(tweet) {
         //make a div for each tweet
         var $tweet = $('<div class="tweet"></div>');
 
         //display username
-        var $user = $('<span class="user"></span>');
+        var $user = $('<span class="user"><a></a></span>');
         $user.text(tweet.user);
         $user.appendTo($tweet);
         
@@ -52,7 +75,7 @@
         $message.appendTo($tweet);
         
         //add to the body
-        $tweet.appendTo(body);
+        $tweet.appendTo($body);
         
       }
 
@@ -64,11 +87,15 @@
         $('.tweet').css(tweetCSS);
         $('.user').css(spacingCSS);
         $('.user').css("float", 'left');
+        $('.user').css("font-weight", 'bold');
         $('.time').css(spacingCSS);
         $('.time').css("float", 'right');
         $('.message').css("clear", 'both');
         $('.message').css(spacingCSS);
         $('.message').css("padding", '15px 0px 10px 0px');
+
+        //add the click-on-username feathre
+        $('.user').on('click', showUserHist); 
       }
 
             //CSS for each tweet
@@ -84,14 +111,6 @@
           border: '5px 0px',
           padding: '5px 0px',
       }
-
-      $(document).ready(function(){
-        refreshPage();
-        $('.refresh').on('click', refreshPage);
-        
-      });
-
-      
 
     </script>
     </div>
