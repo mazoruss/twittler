@@ -12,23 +12,36 @@
       var $body = $('.content');
 
       $(document).ready(function(){
+        //starts with refreshPage to load content
         refreshPage();
+        //refresh display when refresh button is clicked
         $('.refresh').on('click', refreshPage);     
       });
 
-      var refreshPage =function() {
-        //clear body
+      //There are three main functions: 1, refresh page. 2, show user history. 3, add entry
+      //refresh page clears everything and add all the tweets from the streams.home
+      //user history page clears everything and then add all the tweets from streams.user
+      //both of the first 2 functions call on createEntry, which writes the tweet to the DOM
+      //CSS is at the very end.
+
+      var refreshPage = function() {
+        //clear all content to blank state
         $body.html('');
         
-        //iterate through streams for tweets
+        //iterate through streams to get all the tweets
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
+          //createEntry creates all the content
           createEntry(tweet);
           index -= 1;
         }
 
+        //in the case it was changed to view history
         $('.refresh').text('Refresh');
+        //add the click-on-username feature
+        $('.user').on('click', showUserHist); 
+
         //make sure CSS is applied
         createStyle();
       }
@@ -37,10 +50,10 @@
         //clear body
         $body.html('');
 
+        //finds out who the user clicked
         var username = $(this).text();
-        console.log(username);
 
-        //iterate through streams for tweets
+        //same as refreshPage except only show tweet for one user
         var index = streams.users[username].length - 1;
         while(index >= 0){
           var tweet = streams.users[username][index];
@@ -48,39 +61,41 @@
           index -= 1;
         }
 
+        //change text on the refresh button to say "show all"
         $('.refresh').text('Show All');
         
-        //make sure CSS is applied
         createStyle();
       }
 
       //do this for each tweet
       var createEntry = function(tweet) {
-        //make a div for each tweet
+        //make a div for each tweet with class tweet
         var $tweet = $('<div class="tweet"></div>');
 
-        //display username
+        //add username to the tweet
         var $user = $('<span class="user"><a></a></span>');
         $user.text(tweet.user);
         $user.appendTo($tweet);
         
-        //display timestamp
+        //add timestamp
         var $time = $('<span class="time"></span>');
         $time.text(tweet.created_at.toLocaleDateString() +" "+ tweet.created_at.toLocaleTimeString());
         $time.appendTo($tweet);
 
-        //display message
+        //add message
         var $message = $('<p class="message"></p>');
         $message.text(tweet.message);
         $message.appendTo($tweet);
         
-        //add to the body
+        //add to the page
         $tweet.appendTo($body);
         
       }
 
-      //CSS for everything
+      //Everything below is for styling
       var createStyle = function() {
+        
+
         $('.content').css('background-color', 'lightcyan');
         $('.content').css('padding', '15px');
         $('body').css('line-height', '0');
@@ -94,11 +109,10 @@
         $('.message').css(spacingCSS);
         $('.message').css("padding", '15px 0px 10px 0px');
 
-        //add the click-on-username feathre
-        $('.user').on('click', showUserHist); 
+        
       }
 
-            //CSS for each tweet
+      //CSS for tweets
       var tweetCSS = {
         margin: '5px',
         padding: '8px 10px 8px 10px',
