@@ -6,33 +6,92 @@
   </head>
   <body>
     <button class='refresh'>Refresh</button>
-    <div>
+    <div class='content'>
     <script>
 
-      var refreshPage =function() {
-        var $body = $('div');
-        $body.html('');
 
+
+      var refreshPage =function() {
+        //setup content body
+        var $body = $('.content');
+        $body.html('');
+        
+        
+        //iterate through streams for tweets
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          var time = tweet.created_at.toLocaleDateString() +" "+ tweet.created_at.toLocaleTimeString()
-          var $time = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $time.text(time);
-          $tweet.appendTo($body);
-          $time.appendTo($body);
+          createEntry(tweet,$body);
           index -= 1;
         }
+
+        //make sure CSS is applied
+        createStyle();
       }
 
 
 
+      //do this for each tweet
+      var createEntry = function(tweet, body) {
+        //make a div for each tweet
+        var $tweet = $('<div class="tweet"></div>');
+
+        //display username
+        var $user = $('<span class="user"></span>');
+        $user.text(tweet.user);
+        $user.appendTo($tweet);
+        
+        //display timestamp
+        var $time = $('<span class="time"></span>');
+        $time.text(tweet.created_at.toLocaleDateString() +" "+ tweet.created_at.toLocaleTimeString());
+        $time.appendTo($tweet);
+
+        //display message
+        var $message = $('<p class="message"></p>');
+        $message.text(tweet.message);
+        $message.appendTo($tweet);
+        
+        //add to the body
+        $tweet.appendTo(body);
+        
+      }
+
+      //CSS for everything
+      var createStyle = function() {
+        $('.content').css('background-color', 'lightcyan');
+        $('.content').css('padding', '15px');
+        $('body').css('line-height', '0');
+        $('.tweet').css(tweetCSS);
+        $('.user').css(spacingCSS);
+        $('.user').css("float", 'left');
+        $('.time').css(spacingCSS);
+        $('.time').css("float", 'right');
+        $('.message').css("clear", 'both');
+        $('.message').css(spacingCSS);
+        $('.message').css("padding", '15px 0px 10px 0px');
+      }
+
+            //CSS for each tweet
+      var tweetCSS = {
+        margin: '5px',
+        padding: '8px 10px 8px 10px',
+        'background-color': 'white'
+      }
+
+      //CSS for individual elements
+      var spacingCSS = {
+          margin: '0px',
+          border: '5px 0px',
+          padding: '5px 0px',
+      }
+
       $(document).ready(function(){
         refreshPage();
         $('.refresh').on('click', refreshPage);
+        
       });
+
+      
 
     </script>
     </div>
