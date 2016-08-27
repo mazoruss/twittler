@@ -5,23 +5,36 @@
     <script src="data_generator.js"></script>
   </head>
   <body>
+    <button class='refresh'>Refresh</button>
+    <div>
     <script>
 
-      $(document).ready(function(){
-        var $body = $('body');
+      var refreshPage =function() {
+        var $body = $('div');
         $body.html('');
 
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
+          var time = tweet.created_at.toLocaleDateString() +" "+ tweet.created_at.toLocaleTimeString()
+          var $time = $('<div></div>');
           $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          $time.text(time);
           $tweet.appendTo($body);
+          $time.appendTo($body);
           index -= 1;
         }
+      }
 
+
+
+      $(document).ready(function(){
+        refreshPage();
+        $('.refresh').on('click', refreshPage);
       });
 
     </script>
+    </div>
   </body>
 </html>
